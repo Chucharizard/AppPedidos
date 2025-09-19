@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuntes: Aplicación de Pedidos con Entity Framework Core</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            background: #ecf0f1;
+            padding: 10px;
+            border-left: 5px solid #3498db;
+        }
+        
+        h3 {
+            color: #2980b9;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+        
+        .info-box {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+        
+        pre code {
+            background: transparent;
+            color: #e2e8f0;
+            padding: 0;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .command {
+            background: #343a40;
+            color: #28a745;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .highlight {
+            background: #ffffcc;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            pre {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Aplicación de Pedidos con Entity Framework Core</h1>
+        
+        <div class="info-box">
+            <h3>🎯 Objetivo del Proyecto</h3>
+            <p>Crear una aplicación MVC completa para gestión de pedidos usando <strong>Entity Framework Core</strong> con enfoque <strong>Code First</strong>, incluyendo gestión de usuarios, productos, pedidos y items de pedido.</p>
+        </div>
+
+        <h2>🛠️ Herramientas y Paquetes Utilizados</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Paquete NuGet</th>
+                    <th>Versión</th>
+                    <th>Propósito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Microsoft.EntityFrameworkCore</code></td>
+                    <td>9.0.9</td>
+                    <td>ORM principal para .NET</td>
+                </tr>
+                <tr>
+                    <td><code>Microsoft.EntityFrameworkCore.SqlServer</code></td>
+                    <td>9.0.9</td>
+                    <td>Proveedor para SQL Server</td>
+                </tr>
+                <tr>
+                    <td><code>Microsoft.EntityFrameworkCore.Tools</code></td>
+                    <td>9.0.9</td>
+                    <td>Herramientas de migración y scaffolding</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>📁 Estructura del Proyecto Creada</h2>
+        
+        <pre><code>pedidosApp/
+├── Controllers/
+│   └── HomeController.cs
+├── Data/
+│   └── ApplicationDbContext.cs
+├── Models/
+│   ├── User.cs
+│   ├── ProductModel.cs
+│   ├── OrderModel.cs
+│   ├── OrderItem.cs
+│   └── ErrorViewModel.cs
+├── Views/
+│   ├── Home/
+│   └── Shared/
+├── Migrations/
+│   └── [archivos generados automáticamente]
+├── appsettings.json
+└── Program.cs</code></pre>
+
+        <h2>📝 Proceso Paso a Paso</h2>
+
+        <div class="step">
+            <h3>Paso 1: Crear Modelos Básicos</h3>
+            <p>Creamos 4 modelos principales con propiedades simples:</p>
+            
+            <h4>User.cs</h4>
+            <pre><code>namespace pedidosApp.Models
+{
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+    }
+}</code></pre>
+
+            <h4>ProductModel.cs</h4>
+            <pre><code>namespace pedidosApp.Models
+{
+    public class ProductModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+    }
+}</code></pre>
+
+            <h4>OrderModel.cs</h4>
+            <pre><code>namespace pedidosApp.Models
+{
+    public class OrderModel
+    {
+        public int Id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string Status { get; set; }
+        public decimal Total { get; set; }
+        public int UserId { get; set; }
+    }
+}</code></pre>
+
+            <h4>OrderItem.cs</h4>
+            <pre><code>namespace pedidosApp.Models
+{
+    public class OrderItem
+    {
+        public int Id { get; set; }
+        public int Quantity { get; set; }
+        public decimal Subtotal { get; set; }
+        public int OrderId { get; set; }
+        public int ProductId { get; set; }
+    }
+}</code></pre>
+        </div>
+
+        <div class="step">
+            <h3>Paso 2: Crear DbContext</h3>
+            <p>Creamos la carpeta <code>Data</code> y el archivo <code>ApplicationDbContext.cs</code>:</p>
+            
+            <pre><code>using Microsoft.EntityFrameworkCore;
+using pedidosApp.Models;
+
+namespace pedidosApp.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options) : base(options)
+        {
+        }
+
+        public DbSet&lt;User&gt; Users { get; set; }
+        public DbSet&lt;ProductModel&gt; Products { get; set; }
+        public DbSet&lt;OrderModel&gt; Orders { get; set; }
+        public DbSet&lt;OrderItem&gt; OrderItems { get; set; }
+    }
+}</code></pre>
+        </div>
+
+        <div class="step">
+            <h3>Paso 3: Configurar Program.cs</h3>
+            <p>Agregamos el DbContext y la configuración necesaria:</p>
+            
+            <pre><code>using Microsoft.EntityFrameworkCore;
+using pedidosApp.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();</code></pre>
+        </div>
+
+        <div class="step">
+            <h3>Paso 4: Configurar appsettings.json</h3>
+            <p>Configuramos la cadena de conexión para SQL Server local:</p>
+            
+            <pre><code>{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=Panadero\\PANCITO;Database=PedidosDB;Trusted_Connection=true;MultipleActiveResultSets=true;Encrypt=False;TrustServerCertificate=True"
+  }
+}</code></pre>
+        </div>
+
+        <h2>⚡ Comandos de Terminal Ejecutados</h2>
+
+        <div class="success-box">
+            <h3>Package Manager Console Commands:</h3>
+            
+            <h4>1. Crear Migración Inicial</h4>
+            <div class="command">PM> Add-Migration InitialCreate</div>
+            <p><strong>Resultado:</strong> Crea archivos en la carpeta Migrations/ que definen la estructura de la base de datos.</p>
+
+            <h4>2. Aplicar Migración (Crear BD)</h4>
+            <div class="command">PM> Update-Database</div>
+            <p><strong>Resultado:</strong> Crea la base de datos PedidosDB con todas las tablas y estructura.</p>
+        </div>
+
+        <h2>🗄️ Base de Datos Creada</h2>
+
+        <div class="success-box">
+            <h3>✅ Tablas Generadas Exitosamente:</h3>
+            <ul>
+                <li><strong>dbo.Users</strong> - Gestión de usuarios del sistema</li>
+                <li><strong>dbo.Products</strong> - Catálogo de productos</li>
+                <li><strong>dbo.Orders</strong> - Pedidos realizados</li>
+                <li><strong>dbo.OrderItems</strong> - Items individuales de cada pedido</li>
+                <li><strong>dbo.__EFMigrationsHistory</strong> - Control de versiones de BD</li>
+            </ul>
+        </div>
+
+        <h2>⚠️ Problemas Solucionados</h2>
+
+        <div class="warning-box">
+            <h3>Problema 1: SSL/Certificado</h3>
+            <p><strong>Error:</strong> "La cadena de certificación fue emitida por una entidad en la que no se confía"</p>
+            <p><strong>Solución:</strong> Agregar <code>Encrypt=False;TrustServerCertificate=True</code> a la connection string</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>Problema 2: Primary Key faltante</h3>
+            <p><strong>Error:</strong> "The entity type 'OrderItem' requires a primary key"</p>
+            <p><strong>Solución:</strong> Agregar propiedad <code>public int Id { get; set; }</code> a todos los modelos</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>Advertencias de Precisión Decimal</h3>
+            <p><strong>Advertencia:</strong> "No store type was specified for the decimal property"</p>
+            <p><strong>Estado:</strong> No es crítico, SQL Server usa precisión por defecto (18,2)</p>
+            <p><strong>Para solucionar después:</strong> Configurar precisión en OnModelCreating o usar DataAnnotations</p>
+        </div>
+
+        <h2>🚀 Próximos Pasos</h2>
+
+        <div class="info-box">
+            <h3>Scaffolding de Controladores y Vistas</h3>
+            <p>Una vez completada la base de datos, el siguiente paso es generar automáticamente los controladores CRUD:</p>
+            
+            <pre><code># Scaffolding para Users
+dotnet aspnet-codegenerator controller -name UsersController -m User -dc ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout
+
+# Scaffolding para Products  
+dotnet aspnet-codegenerator controller -name ProductsController -m ProductModel -dc ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout
+
+# Scaffolding para Orders
+dotnet aspnet-codegenerator controller -name OrdersController -m OrderModel -dc ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout
+
+# Scaffolding para OrderItems
+dotnet aspnet-codegenerator controller -name OrderItemsController -m OrderItem -dc ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout</code></pre>
+        </div>
+
+        <h2>📊 Características Implementadas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Característica</th>
+                    <th>Estado</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Modelos de Datos</td>
+                    <td class="highlight">✅ Completado</td>
+                    <td>4 modelos principales con propiedades básicas</td>
+                </tr>
+                <tr>
+                    <td>DbContext</td>
+                    <td class="highlight">✅ Completado</td>
+                    <td>Context configurado con DbSets</td>
+                </tr>
+                <tr>
+                    <td>Conexión a BD</td>
+                    <td class="highlight">✅ Completado</td>
+                    <td>SQL Server local configurado</td>
+                </tr>
+                <tr>
+                    <td>Migraciones</td>
+                    <td class="highlight">✅ Completado</td>
+                    <td>Base de datos creada exitosamente</td>
+                </tr>
+                <tr>
+                    <td>Controladores CRUD</td>
+                    <td>⏳ Pendiente</td>
+                    <td>Scaffolding de controladores y vistas</td>
+                </tr>
+                <tr>
+                    <td>Validaciones</td>
+                    <td>⏳ Pendiente</td>
+                    <td>DataAnnotations y validaciones custom</td>
+                </tr>
+                <tr>
+                    <td>Autenticación</td>
+                    <td>⏳ Pendiente</td>
+                    <td>Login/Logout y roles de usuario</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Lecciones Aprendidas</h2>
+
+        <ul>
+            <li><strong>Code First es más flexible</strong> que Database First para proyectos nuevos</li>
+            <li><strong>Las migraciones</strong> permiten versionar y desplegar cambios de BD fácilmente</li>
+            <li><strong>La configuración SSL</strong> puede ser problemática en desarrollo local</li>
+            <li><strong>Entity Framework</strong> maneja automáticamente las Primary Keys cuando se llaman "Id"</li>
+            <li><strong>El scaffolding</strong> acelera significativamente el desarrollo CRUD</li>
+            <li><strong>La estructura organizada</strong> (carpetas Data, Models, Controllers) facilita el mantenimiento</li>
+        </ul>
+
+        <div class="info-box">
+            <p><strong>📝 Nota:</strong> Estos apuntes documentan la fase inicial de configuración. El proyecto continuará con la implementación de controladores, vistas, validaciones y autenticación.</p>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #dee2e6; color: #6c757d;">
+            <p>📱 Apuntes generados para consulta en tablet - Aplicación de Pedidos con Entity Framework Core</p>
+            <p><small>Fecha: Septiembre 2025 | Tecnología: ASP.NET Core MVC + EF Core 9.0.9</small></p>
+        </footer>
+    </div>
+</body>
+</html>
