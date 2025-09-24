@@ -58,12 +58,22 @@ namespace pedidosApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Calcular total automáticamente
+                orderModel.Total = CalculateOrderTotal(orderModel.Id);
+
                 _context.Add(orderModel);
                 await _context.SaveChangesAsync();
+
+                // Recalcular después de guardar (cuando ya tiene ID)
+                orderModel.Total = CalculateOrderTotal(orderModel.Id);
+                _context.Update(orderModel);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(orderModel);
         }
+
 
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -97,6 +107,9 @@ namespace pedidosApp.Controllers
             {
                 try
                 {
+                    // ? NUEVO: Recalcular total automáticamente
+                    orderModel.Total = CalculateOrderTotal(orderModel.Id);
+
                     _context.Update(orderModel);
                     await _context.SaveChangesAsync();
                 }
@@ -113,8 +126,10 @@ namespace pedidosApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(orderModel);
         }
+
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -153,5 +168,15 @@ namespace pedidosApp.Controllers
         {
             return _context.Orders.Any(e => e.Id == id);
         }
+        // ? Metodo helper para calcular total del pedido
+        private decimal CalculateOrderTotal(int orderId)
+        {
+            var total = _context.OrderItems
+                .Where(oi => oi.OrderId == orderId)
+                .Sum(oi => (decimal?)oi.Subtotal) ?? 0;
+
+            return total;
+        }
+
     }
 }
