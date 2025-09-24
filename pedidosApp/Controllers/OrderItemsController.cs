@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,8 +58,23 @@ namespace pedidosApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Cal subtotal auto (Quantity x Price)
+                // Validar stock disponible
+                var product = await _context.Set<ProductModel>().FindAsync(orderItem.ProductId);
+                if (product == null)
+                {
+                    ModelState.AddModelError("ProductId", "Producto no encontrado");
+                    return View(orderItem);
+                }
+
+                if (product.Stock < orderItem.Quantity)
+                {
+                    ModelState.AddModelError("Quantity", $"Stock insuficiente. Solo hay {product.Stock} unidades disponibles de '{product.Name}'");
+                    return View(orderItem);
+                }
+
+                // Cal subtotal automaticamente (Quantity × Price)
                 orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
+
 
                 _context.Add(orderItem);
                 await _context.SaveChangesAsync();
@@ -105,8 +120,30 @@ namespace pedidosApp.Controllers
             {
                 try
                 {
+                    // Validar stock disponible al editar
+                    var product = await _context.Set<ProductModel>().FindAsync(orderItem.ProductId);
+                    if (product == null)
+                    {
+                        ModelState.AddModelError("ProductId", "Producto no encontrado");
+                        return View(orderItem);
+                    }
+
+                    // Obtener cantidad actual del item (por si estamos editando)
+                    var currentItem = await _context.OrderItems.AsNoTracking().FirstOrDefaultAsync(oi => oi.Id == orderItem.Id);
+                    int currentQuantity = currentItem?.Quantity ?? 0;
+
+                    // Calcular stock disponible (stock actual + cantidad que estaba usando antes)
+                    int availableStock = product.Stock + currentQuantity;
+
+                    if (availableStock < orderItem.Quantity)
+                    {
+                        ModelState.AddModelError("Quantity", $"Stock insuficiente. Solo hay {availableStock} unidades disponibles de '{product.Name}'");
+                        return View(orderItem);
+                    }
+
                     // Recalcular subtotal al editar
                     orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
+
 
                     _context.Update(orderItem);
                     await _context.SaveChangesAsync();
@@ -131,7 +168,6 @@ namespace pedidosApp.Controllers
 
         }
      
-
         // GET: OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -179,7 +215,7 @@ namespace pedidosApp.Controllers
             return _context.OrderItems.Any(e => e.Id == id);
         }
 
-        // Cal subtotal (Cantidad z Precio del producto)
+        // Cal subtotal (Cantidad x Precio del producto)
         private decimal CalculateSubtotal(int productId, int quantity)
         {
             var product = _context.Set<ProductModel>().Find(productId);

@@ -107,7 +107,7 @@ namespace pedidosApp.Controllers
             {
                 try
                 {
-                    // ? NUEVO: Recalcular total automáticamente
+                    //  Recalcular total automáticamente
                     orderModel.Total = CalculateOrderTotal(orderModel.Id);
 
                     _context.Update(orderModel);
