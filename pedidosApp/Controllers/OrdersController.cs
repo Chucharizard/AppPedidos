@@ -58,13 +58,13 @@ namespace pedidosApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Calcular total automáticamente
+                // Cal total auto
                 orderModel.Total = CalculateOrderTotal(orderModel.Id);
 
                 _context.Add(orderModel);
                 await _context.SaveChangesAsync();
 
-                // Recalcular después de guardar (cuando ya tiene ID)
+                // Recalcular desp de guardar (cuando ya se tiene el ID)
                 orderModel.Total = CalculateOrderTotal(orderModel.Id);
                 _context.Update(orderModel);
                 await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace pedidosApp.Controllers
         {
             return _context.Orders.Any(e => e.Id == id);
         }
-        // ? Metodo helper para calcular total del pedido
+        //  para calcular total del pedido
         private decimal CalculateOrderTotal(int orderId)
         {
             var total = _context.OrderItems

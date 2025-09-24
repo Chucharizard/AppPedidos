@@ -58,12 +58,20 @@ namespace pedidosApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Cal subtotal auto (Quantity x Price)
+                orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
+
                 _context.Add(orderItem);
                 await _context.SaveChangesAsync();
+
+                // Act total del pedido despues de agregar item
+                await UpdateOrderTotal(orderItem.OrderId);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(orderItem);
         }
+
 
         // GET: OrderItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -97,8 +105,14 @@ namespace pedidosApp.Controllers
             {
                 try
                 {
+                    // Recalcular subtotal al editar
+                    orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
+
                     _context.Update(orderItem);
                     await _context.SaveChangesAsync();
+
+                    // Act total del pedido despues de editar item
+                    await UpdateOrderTotal(orderItem.OrderId);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,7 +128,9 @@ namespace pedidosApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(orderItem);
+
         }
+     
 
         // GET: OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -142,16 +158,53 @@ namespace pedidosApp.Controllers
             var orderItem = await _context.OrderItems.FindAsync(id);
             if (orderItem != null)
             {
+                int orderId = orderItem.OrderId; // Guardar OrderId antes de eliminar
                 _context.OrderItems.Remove(orderItem);
+                await _context.SaveChangesAsync();
+
+                //  Act total del pedido despues de eliminar item
+                await UpdateOrderTotal(orderId);
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool OrderItemExists(int id)
         {
             return _context.OrderItems.Any(e => e.Id == id);
         }
+
+        // Cal subtotal (Cantidad z Precio del producto)
+        private decimal CalculateSubtotal(int productId, int quantity)
+        {
+            var product = _context.Set<ProductModel>().Find(productId);
+            if (product != null)
+            {
+                return quantity * product.Price;
+            }
+            return 0;
+        }
+
+        // Act total del pedido
+        private async Task UpdateOrderTotal(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order != null)
+            {
+                var total = _context.OrderItems
+                    .Where(oi => oi.OrderId == orderId)
+                    .Sum(oi => (decimal?)oi.Subtotal) ?? 0;
+
+                order.Total = total;
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }
