@@ -11,7 +11,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Confi Identity
 builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 var app = builder.Build();
 
@@ -39,4 +41,21 @@ app.MapControllerRoute(
 // Page de Identity (Login, Register)
 app.MapRazorPages();
 
+//  Crear roles automa al iniciar la app
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    string[] roles = { "Admin", "Cliente", "Empleado" };
+
+    foreach (string role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
+
 app.Run();
+
