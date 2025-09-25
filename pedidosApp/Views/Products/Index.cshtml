@@ -1,53 +1,292 @@
-@model IEnumerable<pedidosApp.Models.ProductModel>
+﻿@model IEnumerable<pedidosApp.Models.ProductModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Productos";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                📦 Gestión de Productos
+            </h1>
+            <p class="text-muted mb-0">Administra el inventario y catálogo de productos</p>
+        </div>
+        <a asp-action="Create" class="btn btn-success btn-lg shadow-sm">
+            ➕ Nuevo Producto
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stock)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Total Productos
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <div style="font-size: 2rem; color: #dddfeb;">📦</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                En Stock
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(p => p.Stock > 0)</div>
+                        </div>
+                        <div class="col-auto">
+                            <div style="font-size: 2rem; color: #dddfeb;">✅</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Stock Bajo
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(p => p.Stock <= 5 && p.Stock > 0)</div>
+                        </div>
+                        <div class="col-auto">
+                            <div style="font-size: 2rem; color: #dddfeb;">⚠️</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">
+                                Sin Stock
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(p => p.Stock == 0)</div>
+                        </div>
+                        <div class="col-auto">
+                            <div style="font-size: 2rem; color: #dddfeb;">🚫</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-primary">
+                📋 Catálogo de Productos
+            </h6>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos...">
+                <span class="input-group-text">🔍</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="productsTable">
+                    <thead class="table-success">
+                        <tr>
+                            <th class="fw-bold">
+                                📦 @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th class="fw-bold">
+                                📝 @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th class="fw-bold">
+                                💰 @Html.DisplayNameFor(model => model.Price)
+                            </th>
+                            <th class="fw-bold">
+                                📊 @Html.DisplayNameFor(model => model.Stock)
+                            </th>
+                            <th class="fw-bold text-center">
+                                ⚙️ Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="product-icon me-3">
+                                            <div class="icon-circle bg-success">
+                                                📦
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</div>
+                                            <small class="text-muted">Producto ID: #@item.Id</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div class="description-cell">
+                                        @if (item.Description != null && item.Description.Length > 50)
+                                        {
+                                            <span>@item.Description.Substring(0, 50)...</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@Html.DisplayFor(modelItem => item.Description)</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <span class="price-tag">
+                                        💰 $@Html.DisplayFor(modelItem => item.Price)
+                                    </span>
+                                </td>
+                                <td class="align-middle">
+                                    @if (item.Stock == 0)
+                                    {
+                                        <span class="badge bg-danger fs-6">🚫 Sin Stock</span>
+                                    }
+                                    else if (item.Stock <= 5)
+                                    {
+                                        <span class="badge bg-warning fs-6">⚠️ @item.Stock unidades</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success fs-6">✅ @item.Stock unidades</span>
+                                    }
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm" title="Ver detalles">
+                                            👁️
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm" title="Editar">
+                                            ✏️
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm" title="Eliminar"
+                                           onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+
+    .text-gray-800 {
+        color: #5a5c69 !important;
+    }
+
+    .text-gray-300 {
+        color: #dddfeb !important;
+    }
+
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        background-color: #f8f9fc;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fc;
+    }
+
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    }
+
+    .price-tag {
+        font-weight: 600;
+        color: #28a745;
+        font-size: 1.1rem;
+    }
+
+    .description-cell {
+        max-width: 200px;
+        word-wrap: break-word;
+    }
+
+    .badge {
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.8rem;
+    }
+</style>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        const table = document.getElementById('productsTable');
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+
+            for (let j = 0; j < cells.length - 1; j++) {
+                if (cells[j].textContent.toLowerCase().includes(filter)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+</script>

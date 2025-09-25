@@ -1,48 +1,139 @@
-@model pedidosApp.Models.ProductModel
+﻿@model pedidosApp.Models.ProductModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Producto";
 }
 
-<h1>Create</h1>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-4">
+                    <div class="text-center">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📦➕</div>
+                        <h3 class="mb-0">Crear Nuevo Producto</h3>
+                        <p class="mb-0 opacity-75">Agrega un producto al inventario</p>
+                    </div>
+                </div>
 
-<h4>ProductModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="card-body p-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Name" class="form-label fw-bold">
+                                    📦 Nombre del Producto
+                                </label>
+                                <input asp-for="Name" class="form-control form-control-lg" placeholder="Nombre del producto" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Price" class="form-label fw-bold">
+                                    💰 Precio
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" type="number" step="0.01" class="form-control form-control-lg" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Description" class="form-label fw-bold">
+                                    📝 Descripción
+                                </label>
+                                <textarea asp-for="Description" class="form-control form-control-lg" rows="3" placeholder="Describe el producto..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Stock" class="form-label fw-bold">
+                                    📊 Cantidad Inicial
+                                </label>
+                                <input asp-for="Stock" type="number" class="form-control form-control-lg" placeholder="0" min="0" />
+                                <small class="text-muted">💡 Stock inicial del producto</small>
+                                <span asp-validation-for="Stock" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                                    <button type="submit" class="btn btn-success btn-lg px-5 me-md-3">
+                                        💾 Crear Producto
+                                    </button>
+                                    <a asp-action="Index" class="btn btn-secondary btn-lg px-5">
+                                        ↩️ Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-bottom: none;
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e3e6f0;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            transform: translateY(-1px);
+        }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    .form-label {
+        color: #5a5c69;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .input-group-text {
+        background: #f8f9fc;
+        border-color: #e3e6f0;
+        color: #28a745;
+        font-weight: bold;
+    }
+</style>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
