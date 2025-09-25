@@ -1,50 +1,158 @@
-@model pedidosApp.Models.OrderModel
+﻿@model pedidosApp.Models.OrderModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Pedido";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-warning text-dark py-4">
+                    <div class="text-center">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">✏️📋</div>
+                        <h3 class="mb-0">Editar Pedido</h3>
+                        <p class="mb-0 opacity-75">Modifica el estado y información del pedido</p>
+                    </div>
+                </div>
 
-<h4>OrderModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger"></span>
+                <div class="card-body p-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="info-pedido-actual mb-4">
+                            <h6 class="text-muted">📋 Información Actual:</h6>
+                            <div class="datos-actuales">
+                                <span class="dato-item">
+                                    <strong>📅 Fecha:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                </span>
+                                <span class="dato-item">
+                                    <strong>💰 Total:</strong> $@Model.Total
+                                </span>
+                                <span class="dato-item">
+                                    <strong>👤 Cliente:</strong> #@Model.UserId
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="OrderDate" class="form-label fw-bold">
+                                    📅 Fecha del Pedido
+                                </label>
+                                <input asp-for="OrderDate" type="datetime-local" class="form-control form-control-lg" />
+                                <span asp-validation-for="OrderDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Status" class="form-label fw-bold">
+                                    📊 Estado del Pedido
+                                </label>
+                                <select asp-for="Status" class="form-select form-select-lg" asp-items="ViewBag.StatusList">
+                                    <option value="">-- Seleccionar Estado --</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Total" class="form-label fw-bold">
+                                    💰 Total del Pedido
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Total" type="number" step="0.01" class="form-control form-control-lg" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Total" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="UserId" class="form-label fw-bold">
+                                    👤 ID del Cliente
+                                </label>
+                                <input asp-for="UserId" class="form-control form-control-lg" placeholder="ID del cliente" />
+                                <small class="text-muted">💡 Identificador del cliente</small>
+                                <span asp-validation-for="UserId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                                    <button type="submit" class="btn btn-warning btn-lg px-5 me-md-3">
+                                        💾 Guardar Cambios
+                                    </button>
+                                    <a asp-action="Index" class="btn btn-secondary btn-lg px-5">
+                                        ↩️ Volver a Pedidos
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList">
-                    <option value="">-- Seleccionar Estado --</option>
-                </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-bottom: none;
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e3e6f0;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+            transform: translateY(-1px);
+        }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    .info-pedido-actual {
+        background: #f8f9fc;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #e3e6f0;
+    }
+
+    .datos-actuales {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .dato-item {
+        flex: 1;
+        min-width: 200px;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+</style>
 
 @section Scripts {
     @{

@@ -1,53 +1,165 @@
-@model IEnumerable<pedidosApp.Models.OrderModel>
+﻿@model IEnumerable<pedidosApp.Models.OrderModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Pedidos";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                📋 Gestión de Pedidos
+            </h1>
+            <p class="text-muted mb-0">Administra todos los pedidos del sistema</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
+            ➕ Nuevo Pedido
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Total)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Total)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card tarjeta-estadistica bg-primary text-white">
+                <div class="card-body text-center">
+                    <h2>📋</h2>
+                    <h4>@Model.Count()</h4>
+                    <p>Total Pedidos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card tarjeta-estadistica bg-warning text-white">
+                <div class="card-body text-center">
+                    <h2>⏳</h2>
+                    <h4>@Model.Count(p => p.Status == "Pendiente")</h4>
+                    <p>Pendientes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card tarjeta-estadistica bg-info text-white">
+                <div class="card-body text-center">
+                    <h2>🚚</h2>
+                    <h4>@Model.Count(p => p.Status == "Enviado")</h4>
+                    <p>Enviados</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card tarjeta-estadistica bg-success text-white">
+                <div class="card-body text-center">
+                    <h2>✅</h2>
+                    <h4>@Model.Count(p => p.Status == "Completado")</h4>
+                    <p>Completados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-primary">
+                📋 Lista de Pedidos
+            </h6>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" id="buscarPedido" class="form-control" placeholder="🔍 Buscar pedido...">
+                <span class="input-group-text">🔍</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="tablaPedidos">
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="fw-bold">📅 Fecha</th>
+                            <th class="fw-bold">📊 Estado</th>
+                            <th class="fw-bold">💰 Total</th>
+                            <th class="fw-bold">👤 Cliente</th>
+                            <th class="fw-bold text-center">⚙️ Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    <strong>@pedido.OrderDate.ToString("dd/MM/yyyy")</strong><br>
+                                    <small class="text-muted">@pedido.OrderDate.ToString("HH:mm")</small>
+                                </td>
+                                <td class="align-middle">
+                                    @if (pedido.Status == "Pendiente")
+                                    {
+                                        <span class="badge bg-warning fs-6">⏳ Pendiente</span>
+                                    }
+                                    else if (pedido.Status == "Enviado")
+                                    {
+                                        <span class="badge bg-info fs-6">🚚 Enviado</span>
+                                    }
+                                    else if (pedido.Status == "Completado")
+                                    {
+                                        <span class="badge bg-success fs-6">✅ Completado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary fs-6">❓ @pedido.Status</span>
+                                    }
+                                </td>
+                                <td class="align-middle">
+                                    <span class="precio">💰 $@pedido.Total</span>
+                                </td>
+                                <td class="align-middle">
+                                    👤 Usuario #@pedido.UserId
+                                </td>
+                                <td class="align-middle text-center">
+                                    <a asp-action="Details" asp-route-id="@pedido.Id" class="btn btn-info btn-sm">👁️</a>
+                                    <a asp-action="Edit" asp-route-id="@pedido.Id" class="btn btn-warning btn-sm">✏️</a>
+                                    <a asp-action="Delete" asp-route-id="@pedido.Id" class="btn btn-danger btn-sm"
+                                       onclick="return confirm('¿Eliminar pedido?')">🗑️</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tarjeta-estadistica {
+        border-radius: 15px;
+        margin-bottom: 1rem;
+    }
+
+        .tarjeta-estadistica:hover {
+            transform: translateY(-3px);
+            transition: all 0.3s;
+        }
+
+    .precio {
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+        margin: 2px;
+    }
+</style>
+
+<script>
+    document.getElementById('buscarPedido').addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.getElementById('tablaPedidos').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < filas.length; i++) {
+            const texto = filas[i].textContent.toLowerCase();
+            filas[i].style.display = texto.includes(filtro) ? '' : 'none';
+        }
+    });
+</script>
