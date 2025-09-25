@@ -46,6 +46,7 @@ namespace pedidosApp.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
+            PopulateStatusDropDown("Pendiente"); // Def Pendiente
             return View();
         }
 
@@ -88,6 +89,7 @@ namespace pedidosApp.Controllers
             {
                 return NotFound();
             }
+            PopulateStatusDropDown(orderModel.Status);
             return View(orderModel);
         }
 
@@ -126,7 +128,7 @@ namespace pedidosApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
+            PopulateStatusDropDown(orderModel.Status);
             return View(orderModel);
         }
 
@@ -177,6 +179,18 @@ namespace pedidosApp.Controllers
 
             return total;
         }
+        //  Metodo para poblar dropdown de estados
+        private void PopulateStatusDropDown(string selectedStatus = null)
+        {
+            var statuses = OrderModel.GetValidStatuses();
+            ViewBag.StatusList = statuses.Select(s => new SelectListItem
+            {
+                Value = s,
+                Text = s,
+                Selected = s == selectedStatus
+            }).ToList();
+        }
+
 
     }
 }

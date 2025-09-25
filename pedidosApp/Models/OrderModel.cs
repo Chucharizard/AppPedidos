@@ -20,5 +20,17 @@ namespace pedidosApp.Models
 
         [Required(ErrorMessage = "El usuario es obligatorio")]
         public int UserId { get; set; }
+
+  
+        public static List<string> GetValidStatuses()
+        {
+            return new List<string>
+            {
+                "Pendiente",
+                "Procesado",
+                "Enviado",
+                "Entregado"
+            };
+        }
     }
 }

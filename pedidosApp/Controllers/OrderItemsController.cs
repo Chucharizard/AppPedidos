@@ -76,8 +76,13 @@ namespace pedidosApp.Controllers
                 orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
 
 
+                // Reducir stock automáticamente
+                product.Stock -= orderItem.Quantity;
+                _context.Update(product);
+
                 _context.Add(orderItem);
                 await _context.SaveChangesAsync();
+
 
                 // Act total del pedido despues de agregar item
                 await UpdateOrderTotal(orderItem.OrderId);
@@ -120,7 +125,7 @@ namespace pedidosApp.Controllers
             {
                 try
                 {
-                    // Validar stock disponible al editar
+                    // Val stock disp al editar
                     var product = await _context.Set<ProductModel>().FindAsync(orderItem.ProductId);
                     if (product == null)
                     {
@@ -128,27 +133,31 @@ namespace pedidosApp.Controllers
                         return View(orderItem);
                     }
 
-                    // Obtener cantidad actual del item (por si estamos editando)
+                    // Obtener cantidad actual del item (antes de editar)
                     var currentItem = await _context.OrderItems.AsNoTracking().FirstOrDefaultAsync(oi => oi.Id == orderItem.Id);
                     int currentQuantity = currentItem?.Quantity ?? 0;
 
-                    // Calcular stock disponible (stock actual + cantidad que estaba usando antes)
-                    int availableStock = product.Stock + currentQuantity;
+                    // Cal diferencia de cantidades
+                    int quantityDifference = orderItem.Quantity - currentQuantity;
 
-                    if (availableStock < orderItem.Quantity)
+                    // Veri si hay suf stock para la diferen
+                    if (quantityDifference > 0 && product.Stock < quantityDifference)
                     {
-                        ModelState.AddModelError("Quantity", $"Stock insuficiente. Solo hay {availableStock} unidades disponibles de '{product.Name}'");
+                        ModelState.AddModelError("Quantity", $"Stock insuficiente. Solo hay {product.Stock} unidades adicionales disponibles de '{product.Name}'");
                         return View(orderItem);
                     }
+
+                    // Ajustar stock según la diferencia
+                    product.Stock -= quantityDifference;
+                    _context.Update(product);
 
                     // Recalcular subtotal al editar
                     orderItem.Subtotal = CalculateSubtotal(orderItem.ProductId, orderItem.Quantity);
 
-
                     _context.Update(orderItem);
                     await _context.SaveChangesAsync();
 
-                    // Act total del pedido despues de editar item
+                    //  Act total del pedido despues de editar item
                     await UpdateOrderTotal(orderItem.OrderId);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -165,9 +174,8 @@ namespace pedidosApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(orderItem);
-
         }
-     
+
         // GET: OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -194,11 +202,19 @@ namespace pedidosApp.Controllers
             var orderItem = await _context.OrderItems.FindAsync(id);
             if (orderItem != null)
             {
+                // Devolver stock al eliminar item
+                var product = await _context.Set<ProductModel>().FindAsync(orderItem.ProductId);
+                if (product != null)
+                {
+                    product.Stock += orderItem.Quantity; // Devolver stock
+                    _context.Update(product);
+                }
+
                 int orderId = orderItem.OrderId; // Guardar OrderId antes de eliminar
                 _context.OrderItems.Remove(orderItem);
                 await _context.SaveChangesAsync();
 
-                //  Act total del pedido despues de eliminar item
+                // Act total del pedido despues de eliminar item
                 await UpdateOrderTotal(orderId);
             }
             else
@@ -208,7 +224,6 @@ namespace pedidosApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool OrderItemExists(int id)
         {
