@@ -1,20 +1,21 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using pedidosApp.Models;
+using System.Diagnostics;
 
 namespace pedidosApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
+            // Si el usuario ya está logueado, mostrar dashboard
+            if (User.Identity.IsAuthenticated)
+            {
+                return View("Dashboard");
+            }
+
+          
             return View();
         }
 

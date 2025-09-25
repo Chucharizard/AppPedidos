@@ -14,7 +14,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
+// Config cookie de autenticación
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 
 var app = builder.Build();
 
@@ -60,13 +65,13 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
     // Crear usuario admin 
-    var adminUser = await userManager.FindByEmailAsync("chucho@gmail.com");
+    var adminUser = await userManager.FindByEmailAsync("Admin@gmail.com");
     if (adminUser == null)
     {
         adminUser = new IdentityUser
         {
-            UserName = "chucho@gmail.com",
-            Email = "chucho@gmail.com",
+            UserName = "Admin@gmail.com",
+            Email = "Admin@gmail.com",
             EmailConfirmed = true
         };
         await userManager.CreateAsync(adminUser, "Admin123.");

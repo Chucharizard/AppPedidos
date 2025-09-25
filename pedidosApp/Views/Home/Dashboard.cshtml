@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white text-center p-4 rounded">
+            <h1 class="display-4">¡Bienvenido al Sistema! 🎉</h1>
+            <p class="lead">Logueado como: <strong>@User.Identity.Name</strong></p>
+            <p>Rol: <strong>@(User.IsInRole("Admin") ? "👑 Admin" : User.IsInRole("Empleado") ? "👨‍💼 Empleado" : "👤 Cliente")</strong></p>
+        </div>
+    </div>
+</div>

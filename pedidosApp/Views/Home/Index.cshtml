@@ -1,8 +1,532 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Bienvenido";
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🛍️ Sistema de Pedidos - Bienvenido</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="modern-gradient">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center min-vh-100 py-4">
+            <div class="col-12 col-xl-10">
+
+                <!-- Header -->
+                <div class="text-center text-white mb-5 header-section">
+                    <div class="logo-container mb-4">
+                        <i class="fas fa-shopping-cart fa-4x mb-3 logo-icon"></i>
+                    </div>
+                    <h1 class="display-3 fw-bold mb-3">Sistema de Pedidos</h1>
+                    <p class="lead fs-4 mb-4">Gestiona pedidos, productos e inventario de manera profesional</p>
+                    <div class="header-divider mx-auto"></div>
+                </div>
+
+                <div class="row g-4 justify-content-center">
+
+                    <!-- Admin Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card modern-card admin-card">
+                            <div class="card-header modern-header admin-header">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-crown fa-2x me-3"></i>
+                                    <h4 class="mb-0 fw-bold">Acceso Admin</h4>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-envelope me-2"></i>Email:
+                                    </label>
+                                    <div class="input-group modern-input">
+                                        <input type="text" class="form-control" value="Admin@gmail.com" readonly>
+                                        <button class="btn btn-modern-copy" onclick="copyToClipboard('Admin@gmail.com')">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-key me-2"></i>Password:
+                                    </label>
+                                    <div class="input-group modern-input">
+                                        <input type="text" class="form-control" value="Admin123." readonly>
+                                        <button class="btn btn-modern-copy" onclick="copyToClipboard('Admin123.')">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="permissions-box admin-permissions mb-4">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-shield-alt me-2"></i>Permisos Completos
+                                    </h6>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Gestionar usuarios
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Gestionar productos
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Gestionar pedidos
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Control total del sistema
+                                    </div>
+                                </div>
+                                <a href="/Identity/Account/Login?email=chucho@gmail.com&password=Admin123."
+                                   class="btn btn-modern btn-admin w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login Automático
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empleado Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card modern-card employee-card">
+                            <div class="card-header modern-header employee-header">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-user-tie fa-2x me-3"></i>
+                                    <h4 class="mb-0 fw-bold">Acceso Empleado</h4>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-envelope me-2"></i>Email:
+                                    </label>
+                                    <div class="input-group modern-input">
+                                        <input type="text" class="form-control" value="Empleado@gmail.com" readonly>
+                                        <button class="btn btn-modern-copy" onclick="copyToClipboard('Empleado@gmail.com')">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-key me-2"></i>Password:
+                                    </label>
+                                    <div class="input-group modern-input">
+                                        <input type="text" class="form-control" value="Empleado123." readonly>
+                                        <button class="btn btn-modern-copy" onclick="copyToClipboard('Empleado123.')">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="permissions-box employee-permissions mb-4">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-user-check me-2"></i>Permisos Limitados
+                                    </h6>
+                                    <div class="permission-item">
+                                        <i class="fas fa-times-circle text-danger me-2"></i>
+                                        Gestionar usuarios
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Gestionar productos
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Gestionar pedidos
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Ver inventarios
+                                    </div>
+                                </div>
+                                <a href="/Identity/Account/Login?email=Empleado@gmail.com&password=Empleado123."
+                                   class="btn btn-modern btn-employee w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login Automático
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cliente Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card modern-card client-card">
+                            <div class="card-header modern-header client-header">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-user fa-2x me-3"></i>
+                                    <h4 class="mb-0 fw-bold">¿Eres Cliente?</h4>
+                                </div>
+                            </div>
+                            <div class="card-body p-4 text-center">
+                                <div class="client-icon mb-4">
+                                    <i class="fas fa-user-plus fa-4x"></i>
+                                </div>
+                                <h5 class="fw-bold mb-3">¡Regístrate Gratis!</h5>
+                                <p class="mb-4">
+                                    Crea tu cuenta personalizada y accede a tus pedidos de manera segura.
+                                </p>
+                                <div class="permissions-box client-permissions mb-4">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-star me-2"></i>Como Cliente tendrás:
+                                    </h6>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Ver tus pedidos personales
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Historial completo
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Acceso seguro 24/7
+                                    </div>
+                                    <div class="permission-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Notificaciones de estado
+                                    </div>
+                                </div>
+                                <a href="/Identity/Account/Register" class="btn btn-modern btn-client w-100 mb-3">
+                                    <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                                </a>
+                                <a href="/Identity/Account/Login" class="btn btn-outline-modern btn-client-outline w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Ya tengo cuenta
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center mt-5 text-white-50">
+                    <p class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Sistema seguro y confiable para tu negocio
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+   
+                showToast('✅ Copiado: ' + text);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 2000);
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            const password = urlParams.get('password');
+
+            if (email || password) {
+                setTimeout(() => {
+                    if (email) {
+                        const emailField = document.querySelector('input[name="Input.Email"]');
+                        if (emailField) {
+                            emailField.value = email;
+                            emailField.style.background = '#e8f5e8';
+                            emailField.style.borderColor = '#28a745';
+                        }
+                    }
+
+                    if (password) {
+                        const passwordField = document.querySelector('input[name="Input.Password"]');
+                        if (passwordField) {
+                            passwordField.value = password;
+                            passwordField.style.background = '#e8f5e8';
+                            passwordField.style.borderColor = '#28a745';
+                            passwordField.type = 'text';
+
+                            setTimeout(() => {
+                                passwordField.type = 'password';
+                            }, 3000);
+                        }
+                    }
+
+                    if (email && password) {
+                        const loginButton = document.querySelector('button[type="submit"]');
+                        if (loginButton) {
+                            loginButton.classList.add('btn-success');
+                            loginButton.innerHTML = '🚀 ¡Todo Listo! - Log in';
+                            loginButton.focus();
+                        }
+                    }
+                }, 500);
+            }
+        });
+    </script>
+
+
+    <style>
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --admin-primary: #ff6b6b;
+            --admin-secondary: #ff8e8e;
+            --admin-light: #fff5f5;
+            --employee-primary: #4ecdc4;
+            --employee-secondary: #45b7b8;
+            --employee-light: #f0fdfc;
+            --client-primary: #a8e6cf;
+            --client-secondary: #88d8a3;
+            --client-light: #f8fff8;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+   
+        .modern-gradient {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            .modern-gradient::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+                pointer-events: none;
+            }
+
+   
+        .header-section {
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo-container {
+            position: relative;
+        }
+
+        .logo-icon {
+            color: var(--white);
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header-divider {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--white), transparent);
+            border-radius: 2px;
+        }
+
+     
+        .modern-card {
+            border: none;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+            .modern-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .modern-header {
+            border: none;
+            padding: 1.5rem;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+        }
+
+        .employee-header {
+            background: linear-gradient(135deg, var(--employee-primary), var(--employee-secondary));
+        }
+
+        .client-header {
+            background: linear-gradient(135deg, var(--client-primary), var(--client-secondary));
+        }
+
+        .modern-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .modern-card:hover .modern-header::before {
+            left: 100%;
+        }
+
+        .modern-input .form-control {
+            border: 2px solid var(--gray-100);
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+            .modern-input .form-control:focus {
+                outline: none;
+                border-color: var(--admin-primary);
+                box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+                background: var(--white);
+            }
+
+        .btn-modern-copy {
+            border: 2px solid var(--gray-100);
+            border-left: none;
+            background: var(--white);
+            border-radius: 0 12px 12px 0;
+            padding: 12px 16px;
+            transition: var(--transition);
+        }
+
+            .btn-modern-copy:hover {
+                background: var(--gray-50);
+                border-color: var(--admin-primary);
+            }
+
+        .permissions-box {
+            background: var(--gray-50);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border-left: 4px solid;
+        }
+
+        .admin-permissions {
+            border-left-color: var(--admin-primary);
+        }
+
+        .employee-permissions {
+            border-left-color: var(--employee-primary);
+        }
+
+        .client-permissions {
+            border-left-color: var(--client-primary);
+        }
+
+        .permission-item {
+            padding: 0.25rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-modern {
+            border: none;
+            border-radius: 16px;
+            padding: 16px 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+            color: var(--white);
+        }
+
+        .btn-employee {
+            background: linear-gradient(135deg, var(--employee-primary), var(--employee-secondary));
+            color: var(--white);
+        }
+
+        .btn-client {
+            background: linear-gradient(135deg, var(--client-primary), var(--client-secondary));
+            color: var(--gray-800);
+        }
+
+        .btn-outline-modern {
+            background: transparent;
+            border: 2px solid var(--client-primary);
+            color: var(--client-primary);
+            border-radius: 16px;
+            padding: 14px 24px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+            .btn-outline-modern:hover {
+                background: var(--client-primary);
+                color: var(--gray-800);
+            }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+    
+        .client-icon {
+            color: var(--client-primary);
+            margin-bottom: 1rem;
+        }
+
+   
+        .custom-toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+        }
+
+            .custom-toast.show {
+                transform: translateX(0);
+            }
+
+       
+
+    </style>
+</body>
+</html>

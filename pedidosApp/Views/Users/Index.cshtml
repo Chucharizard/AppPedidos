@@ -1,53 +1,311 @@
-@model IEnumerable<pedidosApp.Models.User>
+﻿@model IEnumerable<pedidosApp.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Usuarios";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+  
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-users me-2 text-primary"></i>
+                Gestión de Usuarios
+            </h1>
+            <p class="text-muted mb-0">Administra todos los usuarios del sistema</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
+            <i class="fas fa-plus me-2"></i>
+            Nuevo Usuario
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+ 
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Total Usuarios
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Administradores
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(u => u.Role == "Admin")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-crown fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Empleados
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(u => u.Role == "Empleado")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-tie fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Clientes
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Count(u => u.Role == "Cliente")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-primary">
+                <i class="fas fa-table me-2"></i>
+                Lista de Usuarios
+            </h6>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar usuarios...">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="usersTable">
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="fw-bold">
+                                <i class="fas fa-user me-1"></i>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th class="fw-bold">
+                                <i class="fas fa-envelope me-1"></i>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th class="fw-bold">
+                                <i class="fas fa-key me-1"></i>
+                                @Html.DisplayNameFor(model => model.Password)
+                            </th>
+                            <th class="fw-bold">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                @Html.DisplayNameFor(model => model.Role)
+                            </th>
+                            <th class="fw-bold text-center">
+                                <i class="fas fa-cogs me-1"></i>
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-3">
+                                            @if (item.Role == "Admin")
+                                            {
+                                                <div class="avatar-icon bg-danger">
+                                                    <i class="fas fa-crown text-white"></i>
+                                                </div>
+                                            }
+                                            else if (item.Role == "Empleado")
+                                            {
+                                                <div class="avatar-icon bg-info">
+                                                    <i class="fas fa-user-tie text-white"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="avatar-icon bg-success">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
+                                            }
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</div>
+                                        <span class="badge
+                                                @(item.Role == "Admin" ? "bg-danger" :
+                                                item.Role == "Empleado" ? "bg-info" : "bg-success")">
+                                            @Html.DisplayFor(modelItem => item.Role)
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <i class="fas fa-envelope text-muted me-2"></i>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td class="align-middle">
+                                <span class="text-muted">
+                                    <i class="fas fa-lock me-2"></i>
+                                    ••••••••
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                @if (item.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger fs-6">
+                                            <i class="fas fa-crown me-1"></i>
+                                            Administrador
+                                        </span>
+                                    }
+                                    else if (item.Role == "Empleado")
+                                    {
+                                        <span class="badge bg-info fs-6">
+                                            <i class="fas fa-user-tie me-1"></i>
+                                            Empleado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success fs-6">
+                                            <i class="fas fa-user me-1"></i>
+                                            Cliente
+                                        </span>
+                                    }
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm" title="Ver detalles">
+                                            👁️
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm" title="Editar">
+                                            ✏️
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm" title="Eliminar"
+                                           onclick="return confirm('¿Está seguro de eliminar este usuario?')">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+
+    .text-gray-800 {
+        color: #5a5c69 !important;
+    }
+
+    .text-gray-300 {
+        color: #dddfeb !important;
+    }
+
+    .avatar-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        background-color: #f8f9fc;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fc;
+    }
+
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    }
+</style>
+
+<!-- busqueda -->
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        const table = document.getElementById('usersTable');
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+
+            for (let j = 0; j < cells.length - 1; j++) { 
+                if (cells[j].textContent.toLowerCase().includes(filter)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+</script>

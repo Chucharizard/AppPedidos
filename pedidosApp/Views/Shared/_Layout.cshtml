@@ -96,5 +96,43 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+ 
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            const password = urlParams.get('password');
+
+            if (email) {
+                const emailField = document.querySelector('input[name="Input.Email"]');
+                if (emailField) {
+                    emailField.value = email;
+                    emailField.style.background = '#d4edda';
+                }
+            }
+
+            if (password) {
+                const passwordField = document.querySelector('input[name="Input.Password"]');
+                if (passwordField) {
+                    passwordField.value = password;
+                    passwordField.style.background = '#d4edda';
+                    passwordField.type = 'text';
+
+                    setTimeout(() => {
+                        passwordField.type = 'password';
+                    }, 3000);
+                }
+            }
+
+            if (email && password) {
+                const loginButton = document.querySelector('button[type="submit"]');
+                if (loginButton) {
+                    loginButton.style.background = '#28a745';
+                    loginButton.innerHTML = '🚀 ¡Listo! - Log in';
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
