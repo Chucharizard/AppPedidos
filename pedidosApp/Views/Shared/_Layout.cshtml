@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,131 +8,186 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/pedidosApp.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">🛍️ Sistema de Pedidos</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">🏠 Inicio</a>
-                        </li>
+<body class="fondo-app">
 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <!-- Admin puede ver todo -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">👥 Usuarios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">📦 Productos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">🛒 Pedidos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderItems" asp-action="Index">📋 Items</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">🔒 Privacy</a>
-                            </li>
-                        }
-                        else if (User.IsInRole("Empleado"))
-                        {
-                            <!-- Empleado puede gestionar productos y pedidos -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">📦 Productos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">🛒 Pedidos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderItems" asp-action="Index">📋 Items</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">🔒 Privacy</a>
-                            </li>
-                        }
-                        else if (User.IsInRole("Cliente"))
-                        {
-                            <!-- Cliente solo puede ver sus pedidos -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="MisPedidos">📋 Mis Pedidos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">🔒 Privacy</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <!-- Usuario sin rol o no logueado -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">🔒 Privacy</a>
-                            </li>
-                        }
-                    </ul>
+    <!-- Barra superior simple -->
+    <nav class="navbar navbar-expand-lg barra-nav">
+        <div class="container">
+            <a class="navbar-brand texto-logo" asp-area="" asp-controller="Home" asp-action="Index">
+                🛍️ Sistema de Pedidos
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+                <!-- Menú según rol -->
+                <ul class="navbar-nav me-auto lista-menu">
+                    <li class="nav-item">
+                        <a class="nav-link enlace-simple" asp-controller="Home" asp-action="Index">🏠 Inicio</a>
+                    </li>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link enlace-simple" asp-controller="Users" asp-action="Index">👥 Usuarios</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link enlace-simple" asp-controller="Products" asp-action="Index">📦 Productos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link enlace-simple" asp-controller="Orders" asp-action="Index">🛒 Pedidos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link enlace-simple" asp-controller="OrderItems" asp-action="Index">📋 Items</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Cliente"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link enlace-simple" asp-controller="Orders" asp-action="MisPedidos">📋 Mis Pedidos</a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link enlace-simple" asp-controller="Home" asp-action="Privacy">🔒 Privacidad</a>
+                    </li>
+                </ul>
+
+                <!-- Usuario -->
+                <div class="zona-usuario">
                     <partial name="_LoginPartial" />
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Sistema de Pedidos - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Contenido -->
+    <main class="contenedor-main">
+        @RenderBody()
+    </main>
+
+    <!-- Pie simple -->
+    <footer class="pie-simple">
+        <div class="container text-center">
+            <small class="texto-footer">
+                © 2025 🛍️ Sistema de Pedidos -
+                <a asp-controller="Home" asp-action="Privacy" class="enlace-pie">Privacidad</a>
+            </small>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
     <script>
- 
+        // Auto-login simple
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const email = urlParams.get('email');
-            const password = urlParams.get('password');
+            const params = new URLSearchParams(window.location.search);
+            const email = params.get('email');
+            const password = params.get('password');
 
             if (email) {
-                const emailField = document.querySelector('input[name="Input.Email"]');
-                if (emailField) {
-                    emailField.value = email;
-                    emailField.style.background = '#d4edda';
-                }
+                const emailInput = document.querySelector('input[name="Input.Email"]');
+                if (emailInput) emailInput.value = email;
             }
 
             if (password) {
-                const passwordField = document.querySelector('input[name="Input.Password"]');
-                if (passwordField) {
-                    passwordField.value = password;
-                    passwordField.style.background = '#d4edda';
-                    passwordField.type = 'text';
-
-                    setTimeout(() => {
-                        passwordField.type = 'password';
-                    }, 3000);
-                }
-            }
-
-            if (email && password) {
-                const loginButton = document.querySelector('button[type="submit"]');
-                if (loginButton) {
-                    loginButton.style.background = '#28a745';
-                    loginButton.innerHTML = '🚀 ¡Listo! - Log in';
+                const passInput = document.querySelector('input[name="Input.Password"]');
+                if (passInput) {
+                    passInput.value = password;
+                    passInput.type = 'text';
+                    setTimeout(() => passInput.type = 'password', 2000);
                 }
             }
         });
     </script>
-
 </body>
 </html>
+
+<style>
+    /* Fondo general */
+    .fondo-app {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    /* Barra de navegación */
+    .barra-nav {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-bottom: 3px solid #007bff;
+    }
+
+    .texto-logo {
+        color: #007bff !important;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .lista-menu {
+        margin-left: 2rem;
+    }
+
+    .enlace-simple {
+        color: #495057 !important;
+        font-weight: 500;
+        margin: 0 0.5rem;
+        padding: 0.5rem 1rem !important;
+        border-radius: 20px;
+        transition: all 0.3s;
+    }
+
+        .enlace-simple:hover {
+            background: #007bff;
+            color: white !important;
+        }
+
+    .zona-usuario {
+        margin-left: 1rem;
+    }
+
+    /* Contenido principal */
+    .contenedor-main {
+        min-height: calc(100vh - 120px);
+        padding: 2rem 0;
+    }
+
+    /* Pie de página */
+    .pie-simple {
+        background: white;
+        border-top: 1px solid #dee2e6;
+        padding: 1.5rem 0;
+        margin-top: auto;
+    }
+
+    .texto-footer {
+        color: #6c757d;
+    }
+
+    .enlace-pie {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .enlace-pie:hover {
+            text-decoration: underline;
+        }
+
+    /* Navbar toggle */
+    .navbar-toggler {
+        border: none;
+    }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+</style>
