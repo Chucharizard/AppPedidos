@@ -1,49 +1,218 @@
-@model pedidosApp.Models.User
+﻿@model pedidosApp.Models.User
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Usuario";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-warning text-dark py-4">
+                    <div class="text-center">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">✏️</div>
+                        <h3 class="mb-0">Editar Usuario</h3>
+                        <p class="mb-0 opacity-75">Modifica la información del usuario</p>
+                    </div>
+                </div>
 
-<h4>User</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="card-body p-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Name" class="form-label fw-bold">
+                                    👤 Nombre Completo
+                                </label>
+                                <input asp-for="Name" class="form-control form-control-lg" placeholder="Nombre completo del usuario" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Email" class="form-label fw-bold">
+                                    📧 Correo Electrónico
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="ejemplo@correo.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Password" class="form-label fw-bold">
+                                    🔒 Nueva Contraseña
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="Nueva contraseña (dejar vacío para mantener)" id="passwordInput" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                        <span id="eyeIcon">👁️</span>
+                                    </button>
+                                </div>
+                                <small class="text-muted">💡 Déjalo vacío si no quieres cambiar la contraseña</small>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Role" class="form-label fw-bold">
+                                    🛡️ Rol del Usuario
+                                </label>
+                                <select asp-for="Role" class="form-select form-select-lg">
+                                    <option value="">-- Seleccionar Rol --</option>
+                                    <option value="Admin">👑 Administrador</option>
+                                    <option value="Empleado">👨‍💼 Empleado</option>
+                                    <option value="Cliente">👤 Cliente</option>
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="current-info-box mb-4">
+                            <h6 class="text-muted">📋 Información Actual:</h6>
+                            <div class="current-info">
+                                <span class="info-item">
+                                    <strong>👤 Usuario:</strong> @Model.Name
+                                </span>
+                                <span class="info-item">
+                                    <strong>📧 Email:</strong> @Model.Email
+                                </span>
+                                <span class="info-item">
+                                    <strong>🛡️ Rol:</strong>
+                                    @if (Model.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger">👑 Admin</span>
+                                    }
+                                    else if (Model.Role == "Empleado")
+                                    {
+                                        <span class="badge bg-info">👨‍💼 Empleado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">👤 Cliente</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                                    <button type="submit" class="btn btn-warning btn-lg px-5 me-md-3">
+                                        💾 Guardar Cambios
+                                    </button>
+                                    <a asp-action="Index" class="btn btn-secondary btn-lg px-5">
+                                        ↩️ Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-bottom: none;
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e3e6f0;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+            transform: translateY(-1px);
+        }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    .form-label {
+        color: #5a5c69;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .current-info-box {
+        background: #f8f9fc;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #e3e6f0;
+    }
+
+    .current-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .info-item {
+        flex: 1;
+        min-width: 200px;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    small {
+        display: block;
+        margin-top: 0.25rem;
+    }
+
+    .input-group .btn {
+        border-radius: 0 10px 10px 0;
+    }
+</style>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('passwordInput');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.textContent = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.textContent = '👁️';
+        }
+    }
+</script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
