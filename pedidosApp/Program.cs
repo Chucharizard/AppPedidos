@@ -15,13 +15,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see [https://aka.ms/aspnetcore-hsts](https://aka.ms/aspnetcore-hsts).
     app.UseHsts();
 }
 
@@ -55,7 +56,35 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    // Crear usuario admin 
+    var adminUser = await userManager.FindByEmailAsync("chucho@gmail.com");
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = "chucho@gmail.com",
+            Email = "chucho@gmail.com",
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(adminUser, "Admin123.");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+    // Crear usuario Empleado
+    var empleadoUser = await userManager.FindByEmailAsync("Empleado@gmail.com");
+    if (empleadoUser == null)
+    {
+        empleadoUser = new IdentityUser
+        {
+            UserName = "Empleado@gmail.com",
+            Email = "Empleado@gmail.com",
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(empleadoUser, "Empleado123.");
+        await userManager.AddToRoleAsync(empleadoUser, "Empleado");
+    }
 }
 
 app.Run();
-
